@@ -1,26 +1,22 @@
-import { streamText, StreamData } from 'ai';
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { streamText, StreamData } from 'ai'
+import { getModel } from '@/global/model'
 
 // Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
-
-const openrouter = createOpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY,
-  });
+export const maxDuration = 30
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages } = await req.json()
 
-  const data = new StreamData();
-  data.append({ test: 'value' });
+  const data = new StreamData()
+  data.append({ test: 'value' })
 
   const result = await streamText({
-    model: openrouter('openai/gpt-3.5-turbo'),
+    model: getModel(),
     messages,
     onFinish() {
-      data.close();
-    },
-  });
+      data.close()
+    }
+  })
 
-  return result.toDataStreamResponse({ data });
+  return result.toDataStreamResponse({ data })
 }
